@@ -10,7 +10,7 @@
 # 创建项目仓库
 mkdir componentx
 cd componentx
-yarn init
+git init
 
 # 获取项目模版
 git pull git@github.com:Fiber-Man/funweb-starter.git --depth=1
