@@ -14,7 +14,7 @@ module.exports = {
         },
         hot: true
     },
-    entry: './index.js',
+    entry: './src/index.js',
     output: {
         libraryTarget: "commonjs",
         path: path.resolve(__dirname, 'dist'),
@@ -23,11 +23,15 @@ module.exports = {
     },
     externals: {
         react: "react",
-        // "prop-types": "prop-types",
+        "react-dom": "react-dom",
         "react-router-dom": "react-router-dom",
         "react-relay": "react-relay",
+        graphql: "graphql",
+        "funweb-lib": "funweb-lib",
         antd: "antd",
-        moment: "moment"
+        "@ant-design/icons": "@ant-design/icons",
+        moment: "moment",
+        "moment/locale/zh-cn": "moment/locale/zh-cn"
     },
     module: {
         rules: [
