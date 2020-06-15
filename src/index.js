@@ -1,12 +1,20 @@
 import React from "react";
-import Role from './Role/index';
+import { Button } from 'antd';
+import List from "./List";
 
-let RemoteComponent = () => {
-    return <div>Hello Remote World!</div>;
+let Hello = () => {
+    return <div>
+        <Button type="primary">Primary Button</Button>
+        <Button>Default Button</Button>
+        <Button type="dashed">Dashed Button</Button>
+        <br />
+        <Button type="text">Text Button</Button>
+        <Button type="link">Link Button</Button>
+    </div>;
 };
-
 
 export default {
-    Role: Role,
-    RemoteComponent: RemoteComponent
+    Hello: Hello,
+    List: List
 };
+
