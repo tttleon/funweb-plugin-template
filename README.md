@@ -1,6 +1,6 @@
 # Remote Component Starter Kit
 
-使用 funweb-start 快速创建 funweb 插件
+使用 funweb-plugin-template 快速创建 funweb 插件
 
 ## Getting Started
 
@@ -13,8 +13,8 @@ cd componentx
 git init
 
 # 获取项目模版
-git pull git@github.com:Fiber-Man/funweb-starter.git --depth=1
-git commit -m "pull funweb-starter"
+git pull git@github.com:funlabs-io/funweb-plugin-template.git --depth=1
+git commit -m "pull funweb-plugin-init"
 
 # 安装依赖
 yarn install
