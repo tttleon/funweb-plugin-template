@@ -5,6 +5,7 @@ const port = 8081;
 module.exports = {
     devServer: {
         compress: true,
+        host: "0.0.0.0",
         port: port,
         headers: {
             "Access-Control-Allow-Origin": "*",
