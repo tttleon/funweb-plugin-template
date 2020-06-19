@@ -3,6 +3,7 @@ const webpack = require('webpack');
 
 const port = 8081;
 module.exports = {
+    mode: "development",
     devServer: {
         compress: true,
         host: "127.0.0.1",
@@ -17,9 +18,10 @@ module.exports = {
         hot: true
     },
     entry: './src/index.js',
+    devtool: "eval-source-map",
     output: {
         libraryTarget: "umd",
-        path: path.resolve(__dirname, '/dist/'),
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
         publicPath: 'http://127.0.0.1:' + port + '/',
     },
