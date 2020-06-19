@@ -4,7 +4,7 @@
   "main": "./src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack-dev-server --inline --hot --disable-host-check --mode development",
     "build": "webpack --mode production",
     "relay": "get-graphql-schema http://127.0.0.1:8080/api/graphql > ./schema.graphql && relay-compiler --src ./src --schema ./schema.graphql --watch"
   },

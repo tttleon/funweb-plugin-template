@@ -5,7 +5,7 @@ const port = 8081;
 module.exports = {
     devServer: {
         compress: true,
-        host: "0.0.0.0",
+        host: "127.0.0.1",
         port: port,
         headers: {
             "Access-Control-Allow-Origin": "*",
@@ -13,14 +13,15 @@ module.exports = {
             "Access-Control-Allow-Headers": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
         },
+        disableHostCheck: true,
         hot: true
     },
     entry: './src/index.js',
     output: {
-        libraryTarget: "commonjs",
+        libraryTarget: "umd",
         path: path.resolve(__dirname, '/dist/'),
-        filename: 'main.js',
-        publicPath: 'http://localhost:' + port + '/',
+        filename: '[name].js',
+        publicPath: 'http://127.0.0.1:' + port + '/',
     },
     externals: {
         react: "react",
