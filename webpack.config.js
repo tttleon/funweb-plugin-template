@@ -18,9 +18,9 @@ module.exports = {
     entry: './src/index.js',
     output: {
         libraryTarget: "commonjs",
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '/dist/'),
         filename: 'main.js',
-        publicPath: 'http://localhost:' + port,
+        publicPath: 'http://localhost:' + port + '/',
     },
     externals: {
         react: "react",
@@ -42,7 +42,34 @@ module.exports = {
                 use: {
                     loader: "babel-loader"
                 }
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    "style-loader", // 将 JS 字符串生成为 style 节点
+                    "css-loader", // 将 CSS 转化成 CommonJS 模块
+                    "sass-loader" // 将 Sass 编译成 CSS，默认使用 Node Sass
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    'file-loader'
+                ]
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    'file-loader'
+                ]
             }
         ]
-    }
+    },
 };
