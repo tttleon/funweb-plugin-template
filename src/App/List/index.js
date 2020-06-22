@@ -157,7 +157,7 @@ const columns = [
         render: (text, record, index) => {
             return (
                 <span>
-                    <ModalLink to={"/App.Menu/Update/" + record.id}>修改</ModalLink>
+                    <ModalLink to={"/Hello.App/Update/" + record.id}>修改</ModalLink>
                     <Divider type="vertical" />
                     <Dropdown overlay={actionsmenu}>
                         <Button type="link">更多<CaretDownOutlined /></Button>
@@ -208,7 +208,7 @@ function TableView(props) {
                     <Button icon={<ReloadOutlined />} type="primary" style={{ margin: 8 }} onClick={() => props.retry()}>刷新</Button>
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
-                    <ModalLink to={"/App.Menu/Create/"}>
+                    <ModalLink to={"/Hello.App/Create/"}>
                         <Button icon={<PlusOutlined />} >新建</Button>
                     </ModalLink>
 

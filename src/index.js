@@ -1,8 +1,9 @@
 import React from "react";
 import { Button } from 'antd';
-import List from "./List";
-
+import app from './App'
 import './index.css'
+
+
 
 let Hello = () => {
     return <div>
@@ -21,6 +22,6 @@ let Hello = () => {
 
 export default {
     Hello: Hello,
-    List: List
+    App: app
 };
 
