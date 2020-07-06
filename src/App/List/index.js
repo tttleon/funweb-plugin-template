@@ -36,28 +36,25 @@ moment.locale('zh-cn');
 
 
 var query = graphql`
-    query List_MenuQuery(
-        $id: ID!
+    query List_AppPaginationQuery(
+        $first: Int!
+        $skip: Int
     ) {
-        menu(
-            id: $id
+        apps(
+            first: $first
+            skip: $skip
         ) {
-            id
-            children{
+            totalCount
+            edges {
                 id
                 name
-                icon
-                order
-                uri
-                remark
-                children{
-                    id
-                    name
-                    icon
-                    order
-                    uri
-                    remark
+                type
+                mode
+                package{
+                    version
                 }
+                remark
+                createdAt
             }
         }
     }`
@@ -81,63 +78,63 @@ const fieldsmenu = (
     </Menu>
 );
 
-const actionsmenu = (
-    <Menu onClick={() => { }}>
-        <Menu.Item key="more">详情</Menu.Item>
-        <Menu.Item key="delete">删除</Menu.Item>
-    </Menu>
-);
-
 const columns = [
     {
-        title: '菜单ID',
+        title: 'App ID',
         dataIndex: 'id',
         key: 'id',
-        width: '15%',
+        width: '8%',
         align: 'center',
     },
     {
-        title: '名称',
+        title: 'App Name',
         dataIndex: 'name',
         key: 'name',
-        width: '15%',
+        width: '17%',
         align: 'center',
     },
     {
-        title: 'Icon',
-        dataIndex: 'icon',
-        key: 'icon',
-        width: '5%',
+        title: 'type',
+        dataIndex: 'type',
+        key: 'type',
+        width: '25%',
         align: 'center',
         render: (text, record, index) => {
             let ds = {
                 "WEB": "PC浏览器",
                 "MOBILE": "Mobile",
                 "APP": "APP",
-                "SERVER": "SERVER"
+                "SERVER": "SERVER",
+                "RESOURCE": "RESOURCE"
             }
-            return ds[record.icon]
-            // (
-            // <Radio.Group value={record.type} size="small">
-            //     <Radio.Button value="WEB">PC浏览器</Radio.Button>
-            //     <Radio.Button value="MOBILE" disabled>Mobile</Radio.Button>
-            //     <Radio.Button value="APP" disabled>APP</Radio.Button>
-            //     <Radio.Button value="SERVER">SERVER</Radio.Button>
-            // </Radio.Group>
+            return ds[record.type]
+        },
+    },
+    {
+        title: 'mode',
+        dataIndex: 'mode',
+        key: 'mode',
+        width: '15%',
+        align: 'center',
+        render: (text, record, index) => {
+            let ds = {
+                "DEVELOPMENT": "调试模式",
+                "PRODUCTION": "生产模式",
+            }
+            return ds[record.mode]
+
+            // return (
+            //     <Radio.Group value={record.mode} size="small">
+            //         <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
+            //         <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
+            //     </Radio.Group>
             // )
         },
     },
     {
-        title: '菜单路由',
-        dataIndex: 'uri',
-        key: 'uri',
-        width: '20%',
-        align: 'left',
-    },
-    {
-        title: '排序',
-        dataIndex: 'order',
-        key: 'order',
+        title: 'remark',
+        dataIndex: 'remark',
+        key: 'remark',
         width: '10%',
         align: 'center',
     },
@@ -152,16 +149,14 @@ const columns = [
     {
         title: '操作',
         key: 'action',
-        width: '30%',
+        width: '20%',
         align: 'center',
         render: (text, record, index) => {
             return (
                 <span>
-                    <ModalLink to={"/Hello.App/Update/" + record.id}>修改</ModalLink>
+                    <Link to={"/App.App/Info/" + record.id} >查看</Link>
                     <Divider type="vertical" />
-                    <Dropdown overlay={actionsmenu}>
-                        <Button type="link">更多<CaretDownOutlined /></Button>
-                    </Dropdown>
+                    <ModalLink to={"/App.App/Update/" + record.id}>配置</ModalLink>
                 </span >
             )
         },
@@ -170,28 +165,13 @@ const columns = [
 
 function TableView(props) {
     const [collapse, setCollapse] = useState(false);
-
-    if (!props.dataSource.length) return (<></>);
-
-    const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-            console.log(selected, selectedRows, changeRows);
-        },
-    };
-
     return (
         <>
             <Row>
                 <Col span={24}>
                     <Breadcrumb style={{ margin: '15px 0px' }}>
                         <Breadcrumb.Item>应用管理</Breadcrumb.Item>
-                        <Breadcrumb.Item>应用菜单</Breadcrumb.Item>
+                        <Breadcrumb.Item>应用列表</Breadcrumb.Item>
                     </Breadcrumb>
                 </Col>
                 <Divider />
@@ -208,7 +188,7 @@ function TableView(props) {
                     <Button icon={<ReloadOutlined />} type="primary" style={{ margin: 8 }} onClick={() => props.retry()}>刷新</Button>
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
-                    <ModalLink to={"/Hello.App/Create/"}>
+                    <ModalLink to={"/App.App/Create/"}>
                         <Button icon={<PlusOutlined />} >新建</Button>
                     </ModalLink>
 
@@ -262,9 +242,10 @@ function TableView(props) {
                     <Table
                         columns={columns}
                         rowKey={props.rowKey}
-                        rowSelection={rowSelection}
                         dataSource={props.dataSource}
+                        pagination={props.pagination}
                         loading={props.loading}
+                        onChange={props.onChange}
                     />
                 </Col >
             </Row >
@@ -274,11 +255,20 @@ function TableView(props) {
 
 function List(props) {
     const session = useContext(SessionContext);
+    const [pageSize] = useState(10);
+    const [current, setCurrent] = useState(1);
+    const [data, setData] = useState([]);
+    let pagination = {
+        current: current,
+        pageSize: pageSize,
+    };
+
     return (<QueryRenderer
         environment={session.environment}
         query={query}
         variables={{
-            id: 1
+            first: pageSize,
+            skip: (current - 1) * pageSize
         }}
         render={({ error, props, retry }) => {
             if (error) {
@@ -287,18 +277,24 @@ function List(props) {
                         <h1>Error!</h1><br />{error.message}
                     </div>)
             }
-            let d = [];
+            let d = data;
             let loading = true;
-            if (props && props.menu) {
+            if (props && props.apps) {
                 loading = false;
-                d = props.menu.children;
+                d = props.apps.edges;
+                pagination.total = props.apps.totalCount;
             }
 
             return <TableView
                 retry={retry}
                 rowKey={record => record.id}
                 dataSource={d}
+                pagination={pagination}
                 loading={loading}
+                onChange={(pagination) => {
+                    setData(d);
+                    setCurrent(pagination.current);
+                }}
             />
         }}
     />);

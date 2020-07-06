@@ -10,41 +10,37 @@ import {
     Select
 } from 'antd';
 
-import UpdateMenu from "./mutations/"
+import UpdateApp from "./mutations/"
 
 
 var query = graphql`
-    query Update_MenuQuery(
-        $id: ID!
+    query Update_AppInfoQuery(
+        $id: ID
     ) {
-        menu(
+        app(
             id: $id
         ) {
             id
-            parent{
-                id
-            }
             name
-            icon
-            order
-            uri
+            type
+            mode
+            url
+            package{
+                id
+                version
+            }
             remark
-        }
-
-        list: menu(
-            id: 1
-        ) {
-            id
-            name
-            children{
-                id
-                name
-                icon
-                order
+            createdAt
+            updatedAt
+            packages (first: 999){
+                edges{
+                    id
+                    version
+                }
+                totalCount
             }
         }
-    }
-    `
+    }`
 
 
 const layout = {
@@ -65,21 +61,21 @@ const ModalForm = props => {
     const { dataSource, onCancel } = props;
     const session = useContext(SessionContext);
     const initialValues = {
-        id: dataSource.menu.id,
-        parentid: dataSource.menu.parent.id,
-        name: dataSource.menu.name,
-        icon: dataSource.menu.icon,
-        order: dataSource.menu.order,
-        uri: dataSource.menu.uri,
-        remark: dataSource.menu.remark,
+        id: dataSource.id,
+        name: dataSource.name,
+        type: dataSource.type,
+        mode: dataSource.mode,
+        url: dataSource.url,
+        version: dataSource.package && dataSource.package.id,
+        remark: dataSource.remark,
     }
 
     const onFinish = values => {
-        UpdateMenu.commit(session.environment, values.id, values.parentid, values.name, values.icon, values.order, values.uri, values.remark, (response, errors) => {
+        UpdateApp.commit(session.environment, values.id, values.name, values.type, values.mode, values.url, values.version, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
-                message.success('更新Menu成功');
+                message.success('更新APP成功');
                 if (onCancel) onCancel();
             }
         },
@@ -88,34 +84,58 @@ const ModalForm = props => {
             })
     };
 
+    const changeMode = e => {
+        // console.log(e.target.value)
+        // form.setFieldsValue({ url: "x" });
+        // form.setFieldsValue({ status: e.target.value })
+    }
+
     return (
         <Form {...layout} form={form} name="update-app" onFinish={onFinish} validateMessages={validateMessages} initialValues={initialValues}>
             <Form.Item name='id' label="应用ID" rules={[{ required: true }]}>
                 <Input disabled />
             </Form.Item>
-            <Form.Item name='parentid' label="父菜单" rules={[{ required: true }]}>
-                <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="选择父节点"
-                    optionFilterProp="children"
-                >
-                    <Select.Option key={0} value={dataSource.list.id}>{dataSource.list.name}</Select.Option>
-                    {dataSource.list.children && dataSource.list.children.map((item, index) => (<Select.Option key={index} value={item.id}>{item.name}</Select.Option>))}
+            <Form.Item name='name' label="应用名称" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="type" label="应用类型" rules={[{ required: true }]}>
+                <Select>
+                    <Select.Option value="WEB">PC浏览器</Select.Option>
+                    <Select.Option value="MOBILE" disabled>Mobile</Select.Option>
+                    <Select.Option value="APP" disabled>APP</Select.Option>
+                    <Select.Option value="SERVER">Server</Select.Option>
+                    <Radio.Button value="RESOURCE">Resource</Radio.Button>
                 </Select>
             </Form.Item>
-            <Form.Item name='name' label="菜单名称" rules={[{ required: true }]}>
-                <Input />
+            <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>
+                <Radio.Group onChange={changeMode}>
+                    <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
+                    <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
+                </Radio.Group>
             </Form.Item>
-            <Form.Item name="icon" label="菜单ICON" rules={[{ required: true }]}>
-                <Input />
+
+            <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) => prevValues.mode !== currentValues.mode}
+            >
+                {({ getFieldValue }) => {
+                    return getFieldValue('mode') === 'DEVELOPMENT' ? (
+                        <Form.Item name="url" label="url" rules={[{ required: true }]}>
+                            <Input />
+                        </Form.Item>
+                    ) : (<Form.Item name='version' label="版本" rules={[{ required: true }]}>
+                        <Select
+                            showSearch
+                            style={{ width: 200 }}
+                            placeholder="Select a person"
+                            optionFilterProp="children"
+                        >
+                            {dataSource.packages && dataSource.packages.edges.map((item, index) => (<Select.Option key={index} value={item.id}>{item.version}</Select.Option>))}
+                        </Select>
+                    </Form.Item>);
+                }}
             </Form.Item>
-            <Form.Item name="order" label="菜单排序" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name='uri' label="菜单地址" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
+
             <Form.Item name='remark' label="备注">
                 <Input.TextArea />
             </Form.Item>
@@ -130,6 +150,7 @@ function UpdateForm(props) {
     const { onCancel } = props;
     const session = useContext(SessionContext);
     props.title("修改应用信息");
+
     return (<QueryRenderer
         environment={session.environment}
         query={query}
@@ -143,10 +164,10 @@ function UpdateForm(props) {
                         <h1>Error!</h1><br />{error.message}
                     </div>)
             }
-            if (props && props.menu) {
+            if (props && props.app) {
                 return (
                     <ModalForm
-                        dataSource={props}
+                        dataSource={props.app}
                         onCancel={onCancel}
                     />)
             }

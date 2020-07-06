@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { QueryRenderer, graphql } from 'react-relay';
 import {
     Form,
     Input,
@@ -9,25 +8,8 @@ import {
     message
 } from 'antd';
 import { SessionContext } from 'funweb-lib'
-import CreateMenu from "./mutations/"
+import CreateApp from "./mutations/"
 
-var query = graphql`
-    query Create_MenuQuery(
-        $id: ID!
-    ) {
-        menu(
-            id: $id
-        ) {
-            id
-            name
-            children{
-                id
-                name
-                icon
-                order
-            }
-        }
-    }`
 
 const layout = {
     labelCol: { span: 8 },
@@ -42,16 +24,17 @@ const validateMessages = {
     },
 };
 
-const ModalForm = props => {
-    const { dataSource, onCancel } = props;
+const CreateForm = props => {
     const session = useContext(SessionContext);
+    props.title("创建应用信息");
+    const { onCancel } = props;
 
     const onFinish = values => {
-        CreateMenu.commit(session.environment, values.parentid, values.name, values.icon, values.order, values.uri, values.remark, (response, errors) => {
+        CreateApp.commit(session.environment, values.name, values.type, values.mode, values.url, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
-                message.success('创建菜单成功');
+                message.success('创建APP成功');
                 if (onCancel) onCancel();
             }
         },
@@ -62,29 +45,30 @@ const ModalForm = props => {
 
     return (
         <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
-            <Form.Item name='parentid' label="父菜单" rules={[{ required: true }]}>
-                <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="选择父节点"
-                    optionFilterProp="children"
-                >
-                    <Select.Option key={0} value={dataSource.id}>{dataSource.name}</Select.Option>
-                    {dataSource.children && dataSource.children.map((item, index) => (<Select.Option key={index} value={item.id}>{item.name}</Select.Option>))}
+            <Form.Item name='name' label="应用名称" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="type" label="应用类型" rules={[{ required: true }]}>
+                <Select>
+                    <Select.Option value="WEB">PC浏览器</Select.Option>
+                    <Select.Option value="MOBILE" disabled>Mobile</Select.Option>
+                    <Select.Option value="APP" disabled>APP</Select.Option>
+                    <Select.Option value="SERVER">Server</Select.Option>
+                    <Radio.Button value="RESOURCE">Resource</Radio.Button>
                 </Select>
             </Form.Item>
-            <Form.Item name='name' label="菜单名称" rules={[{ required: true }]}>
+            <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>
+                <Radio.Group>
+                    <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
+                    <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item name='url' label="调试地址">
                 <Input />
             </Form.Item>
-            <Form.Item name="icon" label="菜单ICON" rules={[{ required: true }]}>
+            {/* <Form.Item name='version' label="版本">
                 <Input />
-            </Form.Item>
-            <Form.Item name="order" label="菜单排序" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name='uri' label="菜单地址" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item name='remark' label="备注">
                 <Input.TextArea />
             </Form.Item>
@@ -95,33 +79,4 @@ const ModalForm = props => {
     );
 };
 
-function CreateForm(props) {
-    const { onCancel } = props;
-    const session = useContext(SessionContext);
-    props.title("创建菜单信息");
-
-    return (<QueryRenderer
-        environment={session.environment}
-        query={query}
-        variables={{
-            id: 1,
-        }}
-        render={({ error, props, retry }) => {
-            if (error) {
-                return (
-                    <div>
-                        <h1>Error!</h1><br />{error.message}
-                    </div>)
-            }
-            if (props && props.menu) {
-                return (
-                    <ModalForm
-                        dataSource={props.menu}
-                        onCancel={onCancel}
-                    />)
-            }
-            return <></>
-        }}
-    />);
-}
 export default CreateForm;
