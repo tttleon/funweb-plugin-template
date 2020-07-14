@@ -31,12 +31,25 @@ module.exports = {
                     loader: "babel-loader"
                 }
             },
-            {
-                test: /\.css$/,
+            { 
+                test: /\.css$/i,
                 use: [
                     'style-loader',
-                    'css-loader'
-                ]
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: {
+                                mode: (resourcePath) => {
+                                    if (/global.css$/i.test(resourcePath)) {
+                                        return 'global';
+                                    }
+                                    return 'local';
+                                },
+                                localIdentName: '[hash:base64]',
+                            },
+                        }
+                    },
+                ],
             },
             {
                 test: /\.scss$/,

@@ -1,4 +1,11 @@
-#cssdemo{
-    border: solid 1px cyan;
-    color: red;
+
+
+.cssgeneral {
+    border: solid 1px black;
+    color: black !important;
+}
+
+.module {
+    border: solid 1px blue;
+    color: blue !important;
 }

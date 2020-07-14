@@ -40,25 +40,38 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(js|jsx)$/i,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader"
                 }
             },
-            {
-                test: /\.css$/,
+            { 
+                test: /\.css$/i,
                 use: [
                     'style-loader',
-                    'css-loader'
-                ]
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: {
+                                mode: (resourcePath) => {
+                                    if (/global.css$/i.test(resourcePath)) {
+                                        return 'global';
+                                    }
+                                    return 'local';
+                                },
+                                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                            },
+                        }
+                    },
+                ],
             },
             {
-                test: /\.scss$/,
+                test: /\.scss$/i,
                 use: [
-                    "style-loader", // 将 JS 字符串生成为 style 节点
-                    "css-loader", // 将 CSS 转化成 CommonJS 模块
-                    "sass-loader" // 将 Sass 编译成 CSS，默认使用 Node Sass
+                    "style-loader",
+                    "css-loader",
+                    "sass-loader"
                 ]
             },
             {

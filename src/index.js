@@ -1,9 +1,8 @@
 import React from "react";
 import { Button } from 'antd';
 import app from './App'
-import './index.css'
-
-
+import styles from './index.css'
+import './index.global.css'
 
 let Hello = () => {
     return <div>
@@ -15,8 +14,10 @@ let Hello = () => {
         <Button type="link">Link Button</Button>
 
         <br />
-        <div id="cssdemo">css test</div>
-
+        
+        <div className="cssglobal" style={{color: 'green'}}>css test 1: global css</div>
+        <div className="cssgeneral" style={{color: 'green'}}>css test 2: general css</div>
+        <div className={styles.module} style={{color: 'green'}}>css test 3: module css</div>
     </div>;
 };
 
