@@ -40,13 +40,28 @@ module.exports = {
     module: {
         rules: [
             {
+                enforce: 'pre',
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        options: {
+                            formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                            eslintPath: require.resolve('eslint'),
+                            failOnError: true,
+                        },
+                        loader: 'eslint-loader',
+                    },
+                ],
+            },
+            {
                 test: /\.(js|jsx)$/i,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader"
                 }
             },
-            { 
+            {
                 test: /\.css$/i,
                 use: [
                     'style-loader',

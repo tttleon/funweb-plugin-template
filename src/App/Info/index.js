@@ -13,7 +13,6 @@ import {
     Dropdown,
     Row,
     Col,
-    Radio,
 } from 'antd';
 
 import {
@@ -113,7 +112,7 @@ function TableView(props) {
                 </Col>
                 <Col span={12}>
                     {
-                        dataSource.mode == "DEVELOPMENT" &&
+                        dataSource.mode === "DEVELOPMENT" &&
                         <>
                             调试地址: {dataSource.url}
                         </>
