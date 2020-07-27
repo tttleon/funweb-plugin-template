@@ -6,7 +6,7 @@ import './index.global.css'
 
 let Hello = () => {
     return <div>
-        <Button type="primary">Primary Button</Button>
+        <Button type="primary">Primary Button221</Button>
         <Button>Default Button</Button>
         <Button type="dashed">Dashed Button</Button>
         <br />
