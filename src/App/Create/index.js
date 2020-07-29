@@ -5,11 +5,13 @@ import {
     Button,
     Radio,
     Select,
-    message
+    message,
+    AutoComplete
 } from 'antd';
 import { SessionContext } from 'funweb-lib'
 import CreateApp from "./mutations/"
 
+const { Option } = Select;
 
 const layout = {
     labelCol: { span: 8 },
@@ -24,16 +26,30 @@ const validateMessages = {
     },
 };
 
-const CreateForm = props => {
+const CreateForm = props => { 
+
+    var state = {
+        urlplus: '',//存放url的变量
+    };
+      
+    function dealInput (event) {
+        //console.log(event)    // 只有通过 event 才能获得输入框输入的值 
+        state.urlplus=event;
+        //console.log("state.urlplus:"+state.urlplus)
+       }
+
     const session = useContext(SessionContext);
     props.title("创建应用信息");
     const { onCancel } = props;
 
     const onFinish = values => {
-        CreateApp.commit(session.environment, values.name, values.type, values.mode, values.url, values.remark, (response, errors) => {
-            if (errors) {
+        // console.log(state.urlplus)
+        // console.log("values:"+ JSON.stringify(values)) //JSON.stringify(values) 转译Object
+        // return
+        CreateApp.commit(session.environment, values.name, values.type, values.mode, state.urlplus, values.remark, (response, errors) => {
+            if (errors) {                
                 message.error(errors[0].message);
-            } else {
+            } else {                
                 message.success('创建APP成功');
                 if (onCancel) onCancel();
             }
@@ -63,12 +79,17 @@ const CreateForm = props => {
                     <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
                 </Radio.Group>
             </Form.Item>
-            <Form.Item name='url' label="调试地址">
+            <Form.Item name="url" label="调试地址">
+                <Input.Group compact > 
+                    <AutoComplete   onChange={dealInput}                      
+                        style={{ width: '100%' }}                        
+                        options={[{ value: 'Http://127.0.0.1:8080/main.js' }]}
+                    />
+                </Input.Group>                                  
+            </Form.Item>
+            <Form.Item name='version' label="版本">
                 <Input />
             </Form.Item>
-            {/* <Form.Item name='version' label="版本">
-                <Input />
-            </Form.Item> */}
             <Form.Item name='remark' label="备注">
                 <Input.TextArea />
             </Form.Item>

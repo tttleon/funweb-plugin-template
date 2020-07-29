@@ -188,7 +188,7 @@ function TableView(props) {
                     <Button icon={<ReloadOutlined />} type="primary" style={{ margin: 8 }} onClick={() => props.retry()}>刷新</Button>
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
-                    <ModalLink to={"/App.App/Create/"}>
+                    <ModalLink to={"/Hello.App/Create/"}>
                         <Button icon={<PlusOutlined />} >新建</Button>
                     </ModalLink>
 
