@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 
 const port = 8081;
 module.exports = {
@@ -15,7 +14,9 @@ module.exports = {
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
         },
         disableHostCheck: true,
-        hot: true
+        hot: true,
+        contentBase: false,
+        publicPath: '/',
     },
     entry: './src/index.js',
     devtool: "eval-source-map",
@@ -90,15 +91,26 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpg|gif)$/i,
                 use: [
-                    'file-loader'
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[hash:8].[ext]',
+                            outputPath: 'media',
+                        }
+                    }
                 ]
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 use: [
-                    'file-loader'
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[hash:8].[ext]',
+                        }
+                    }
                 ]
             }
         ]

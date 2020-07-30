@@ -1,5 +1,7 @@
+const package = require("../package.json");
 const path = require('path');
-const webpack = require('webpack');
+var ZipPlugin = require('zip-webpack-plugin');
+
 
 module.exports = {
     mode: "production",
@@ -9,6 +11,7 @@ module.exports = {
         libraryTarget: "umd",
         path: path.resolve(__dirname, '../dist'),
         filename: '[name].js',
+        publicPath: '/app/web/' + package.name.toLocaleLowerCase() + "/",
     },
     externals: {
         react: "react",
@@ -22,6 +25,31 @@ module.exports = {
         moment: "moment",
         "moment/locale/zh-cn": "moment/locale/zh-cn"
     },
+    plugins: [
+        new ZipPlugin({
+            path: './release/',
+            filename: `${package.name.toLocaleLowerCase()}_web_${package.version}.zip`,
+            extension: 'zip',
+            pathPrefix: 'app/web/' + package.name.toLocaleLowerCase(),
+            // pathMapper: function (assetPath) {
+            //     // put all pngs in an `images` subdir
+            //     if (assetPath.endsWith('.png'))
+            //         return path.join(path.dirname(assetPath), 'images', path.basename(assetPath));
+            //     return assetPath;
+            // },
+            include: [/\.js$/, /\.(png|svg|jpg|gif)$/, /\.(woff|woff2|eot|ttf|otf)$/],
+            exclude: [/\.htm$/, /\.html$/],
+            fileOptions: {
+                mtime: new Date(),
+                mode: 0o100664,
+                compress: true,
+                forceZip64Format: false,
+            },
+            zipOptions: {
+                forceZip64Format: false,
+            },
+        })
+    ],
     module: {
         rules: [
             {
@@ -77,7 +105,14 @@ module.exports = {
             {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
-                    'file-loader'
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[hash:8].[ext]',
+                            outputPath: 'media',
+                            // publicPath: '/app/web/' + package.name.toLocaleLowerCase(),
+                        }
+                    }
                 ]
             },
             {
