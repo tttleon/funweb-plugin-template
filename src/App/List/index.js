@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { QueryRenderer, graphql } from 'react-relay';
-import {
-    Link,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ModalLink, SessionContext } from 'funweb-lib';
 
 import moment from 'moment';
@@ -47,11 +45,17 @@ var query = graphql`
             edges {
                 id
                 name
+                space
                 type
                 mode
                 package{
                     version
                 }
+                creator{
+                    id
+                    name
+                }
+                org
                 remark
                 createdAt
             }
@@ -93,10 +97,17 @@ const columns = [
         align: 'center',
     },
     {
+        title: 'space',
+        dataIndex: 'space',
+        key: 'space',
+        width: '8%',
+        align: 'center',
+    },
+    {
         title: 'type',
         dataIndex: 'type',
         key: 'type',
-        width: '25%',
+        width: '8%',
         align: 'center',
         render: (text, record, index) => {
             let ds = {
@@ -113,28 +124,31 @@ const columns = [
         title: 'mode',
         dataIndex: 'mode',
         key: 'mode',
-        width: '15%',
+        width: '8%',
         align: 'center',
         render: (text, record, index) => {
             let ds = {
                 "DEVELOPMENT": "调试模式",
                 "PRODUCTION": "生产模式",
             }
-            return ds[record.mode]
-
-            // return (
-            //     <Radio.Group value={record.mode} size="small">
-            //         <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
-            //         <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
-            //     </Radio.Group>
-            // )
+            return ds[record.mode];
+        },
+    },
+    {
+        title: 'creator',
+        dataIndex: 'creator',
+        key: 'creator',
+        width: '10%',
+        align: 'center',
+        render: (text, record, index) => {
+            return record.creator.name;
         },
     },
     {
         title: 'remark',
         dataIndex: 'remark',
         key: 'remark',
-        width: '10%',
+        width: '12%',
         align: 'center',
     },
     {

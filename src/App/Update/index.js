@@ -22,6 +22,7 @@ var query = graphql`
         ) {
             id
             name
+            space
             type
             mode
             url
@@ -63,6 +64,7 @@ const ModalForm = props => {
     const initialValues = {
         id: dataSource.id,
         name: dataSource.name,
+        space: dataSource.space,
         type: dataSource.type,
         mode: dataSource.mode,
         url: dataSource.url,
@@ -71,7 +73,7 @@ const ModalForm = props => {
     }
 
     const onFinish = values => {
-        UpdateApp.commit(session.environment, values.id, values.name, values.type, values.mode, values.url, values.version, values.remark, (response, errors) => {
+        UpdateApp.commit(session.environment, values.id, values.name, values.space, values.type, values.mode, values.url, values.version, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
@@ -98,13 +100,20 @@ const ModalForm = props => {
             <Form.Item name='name' label="应用名称" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
+            <Form.Item name="space" label="应用空间" rules={[{ required: true }]}>
+                <Select>
+                    <Select.Option value="CORE">CORE</Select.Option>
+                    <Select.Option value="SYSTEM">SYSTEM</Select.Option>
+                    <Select.Option value="FRAME">FRAME</Select.Option>
+                    <Select.Option value="USER">USER</Select.Option>
+                </Select>
+            </Form.Item>
             <Form.Item name="type" label="应用类型" rules={[{ required: true }]}>
                 <Select>
                     <Select.Option value="WEB">PC浏览器</Select.Option>
                     <Select.Option value="MOBILE" disabled>Mobile</Select.Option>
                     <Select.Option value="APP" disabled>APP</Select.Option>
                     <Select.Option value="SERVER">Server</Select.Option>
-                    <Radio.Button value="RESOURCE">Resource</Radio.Button>
                 </Select>
             </Form.Item>
             <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>

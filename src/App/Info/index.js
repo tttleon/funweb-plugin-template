@@ -35,6 +35,7 @@ var query = graphql`
         ) {
             id
             name
+            space
             type
             mode
             url
@@ -82,10 +83,13 @@ function TableView(props) {
             <Divider />
 
             <Row gutter={[16, 16]} >
-                <Col span={6} offset={3}>
+                <Col span={3} offset={3}>
                     应用ID: {dataSource.id}
                 </Col>
-                <Col span={12} style={{ textAlign: "right" }}>
+                <Col span={3} offset={3}>
+                    名称: {dataSource.name}
+                </Col>
+                <Col span={10} style={{ textAlign: "right" }}>
                     <Button icon={<ToolOutlined />} style={{ margin: 2 }} onClick={() => props.retry()}>发版</Button>
                     <Dropdown overlay={actionmenu} icon={<CaretDownOutlined />}>
                         <Button>
@@ -99,7 +103,7 @@ function TableView(props) {
             </Row>
             <Row gutter={[16, 16]} >
                 <Col span={6} offset={3}>
-                    名称: {dataSource.name}
+                    空间: {dataSource.space}
                 </Col>
                 <Col span={6}>
                     类型: {ds[dataSource.type]}
@@ -167,6 +171,8 @@ function List(props) {
         query={query}
         variables={{
             id: props.params.id,
+            first: 10,
+            skip: 0
         }}
         render={({ error, props, retry }) => {
             if (error) {
