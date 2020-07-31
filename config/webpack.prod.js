@@ -10,7 +10,7 @@ module.exports = {
     output: {
         libraryTarget: "umd",
         path: path.resolve(__dirname, '../dist'),
-        filename: '[name].js',
+        filename: '[name]_' + package.version + '.js',
         publicPath: '/app/web/' + package.name.toLocaleLowerCase() + "/",
     },
     externals: {
