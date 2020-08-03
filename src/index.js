@@ -24,8 +24,9 @@ let Hello = () => {
     </div>;
 };
 
+
 export default {
-    Hello: Hello,
-    App: app
+    App: app,
+    Hello: Hello
 };
 

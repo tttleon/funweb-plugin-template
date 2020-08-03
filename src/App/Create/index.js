@@ -1,11 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useContext,useState } from 'react'
 import {
     Form,
     Input,
     Button,
     Radio,
     Select,
-    message
+    message,
+    AutoComplete
 } from 'antd';
 import { SessionContext } from 'funweb-lib'
 import CreateApp from "./mutations/"
@@ -29,8 +30,16 @@ const CreateForm = props => {
     props.title("创建应用信息");
     const { onCancel } = props;
 
+    //调试地址输入框
+    const dealInput = (event) => {
+        setUrl(event);
+        console.log("event:",event);
+    };
+
+    const [url, setUrl] = useState(''); //动态写值到url
+
     const onFinish = values => {
-        CreateApp.commit(session.environment, values.name, values.space, values.type, values.mode, values.url, values.remark, (response, errors) => {
+        CreateApp.commit(session.environment, values.name, values.space, values.type, values.mode, url, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
@@ -70,8 +79,15 @@ const CreateForm = props => {
                     <Radio.Button value="PRODUCTION">生产模式</Radio.Button>
                 </Radio.Group>
             </Form.Item>
-            <Form.Item name='url' label="调试地址">
-                <Input />
+            <Form.Item name="url" label="调试地址">
+                <Input.Group compact > 
+                    <AutoComplete   
+                        value={url}
+                        onChange={dealInput}                      
+                        style={{ width: '100%' }}                        
+                        options={[{ value: 'Http://127.0.0.1:8081/main.js' }]}
+                    />
+                </Input.Group>      
             </Form.Item>
             {/* <Form.Item name='version' label="版本">
                 <Input />

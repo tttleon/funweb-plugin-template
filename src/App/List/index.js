@@ -190,7 +190,6 @@ function TableView(props) {
                 <Divider />
             </Row>
 
-
             <Row>
                 <Col span={12}>
                     <Dropdown overlay={actionmenu} icon={<CaretDownOutlined />}>
