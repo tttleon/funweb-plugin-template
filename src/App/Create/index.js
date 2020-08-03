@@ -64,11 +64,16 @@ const CreateForm = props => {
     const [remark, setRemark] = useState(''); //动态写值到remark
 
     const onFinish = values => {
+<<<<<<< HEAD
         // console.log(state.urlplus)
         // console.log("values:"+ JSON.stringify(values)) //JSON.stringify(values) 转译Object
         // return
         CreateApp.commit(session.environment, values.name, values.type, values.mode, state.urlplus, state.jsonplus, (response, errors) => {
             if (errors) {                
+=======
+        CreateApp.commit(session.environment, values.name, values.space, values.type, values.mode, values.url, values.remark, (response, errors) => {
+            if (errors) {
+>>>>>>> f17d579ac0b783aaa7c7e639d2ef9b3341fa512e
                 message.error(errors[0].message);
             } else {                
                 message.success('创建APP成功');
@@ -85,13 +90,20 @@ const CreateForm = props => {
             <Form.Item name='name' label="应用名称" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
+            <Form.Item name="space" label="应用空间" rules={[{ required: true }]}>
+                <Select>
+                    <Select.Option value="CORE">CORE</Select.Option>
+                    <Select.Option value="SYSTEM">SYSTEM</Select.Option>
+                    <Select.Option value="FRAME">FRAME</Select.Option>
+                    <Select.Option value="USER">USER</Select.Option>
+                </Select>
+            </Form.Item>
             <Form.Item name="type" label="应用类型" rules={[{ required: true }]}>
                 <Select>
                     <Select.Option value="WEB">PC浏览器</Select.Option>
                     <Select.Option value="MOBILE" disabled>Mobile</Select.Option>
                     <Select.Option value="APP" disabled>APP</Select.Option>
                     <Select.Option value="SERVER">Server</Select.Option>
-                    <Radio.Button value="RESOURCE">Resource</Radio.Button>
                 </Select>
             </Form.Item>
             <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>
