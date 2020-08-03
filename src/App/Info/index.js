@@ -29,6 +29,8 @@ moment.locale('zh-cn');
 var query = graphql`
     query Info_AppInfoQuery(
         $id: ID
+        $first: Int
+        $skip: Int
     ) {
         app(
             id: $id
@@ -45,6 +47,7 @@ var query = graphql`
             remark
             createdAt
             updatedAt
+            ...List_AppPackages @arguments(first: $first, skip: $skip)
         }
     }`
 
@@ -157,6 +160,7 @@ function TableView(props) {
             <Card type="inner" title="版本发布历史" extra={<ModalLink to={"/App.App.Package/Create/" + dataSource.id}>
                 <Button type="link" icon={<PlusCircleOutlined />} style={{ margin: 2 }}>发布</Button>
             </ModalLink>}>
+                {/* <Packages AppPackages={dataSource} id={dataSource.id}></Packages> */}
             </Card>
         </>
     );

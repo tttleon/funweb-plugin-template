@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "funweb-plugin-template",
-=======
-  "name": "Hello",
->>>>>>> f17d579ac0b783aaa7c7e639d2ef9b3341fa512e
+  "name": "hello",
   "version": "1.0.0",
   "main": "./src/index.js",
   "license": "MIT",

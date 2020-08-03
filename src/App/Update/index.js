@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext,useState } from 'react'
 import { QueryRenderer, graphql } from 'react-relay';
 import { SessionContext } from 'funweb-lib'
 import {
@@ -7,7 +7,8 @@ import {
     Button,
     Radio,
     message,
-    Select
+    Select,
+    AutoComplete
 } from 'antd';
 
 import UpdateApp from "./mutations/"
@@ -71,9 +72,16 @@ const ModalForm = props => {
         version: dataSource.package && dataSource.package.id,
         remark: dataSource.remark,
     }
+    
+    const [url, setUrl] = useState(initialValues.url);//动态写值到url
+
+    //调试地址输入框
+    function dealInput (event) {
+        setUrl(event);    
+    }
 
     const onFinish = values => {
-        UpdateApp.commit(session.environment, values.id, values.name, values.space, values.type, values.mode, values.url, values.version, values.remark, (response, errors) => {
+        UpdateApp.commit(session.environment, values.id, values.name, values.space, values.type, values.mode, url, values.version, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
@@ -130,7 +138,14 @@ const ModalForm = props => {
                 {({ getFieldValue }) => {
                     return getFieldValue('mode') === 'DEVELOPMENT' ? (
                         <Form.Item name="url" label="url" rules={[{ required: true }]}>
-                            <Input />
+                            <Input.Group compact > 
+                                    <AutoComplete   
+                                        onChange={dealInput}   
+                                        value={url}                   
+                                        style={{ width: '100%' }}                        
+                                        options={[{ value: 'Http://127.0.0.1:8081/main.js' }]}
+                                    />
+                            </Input.Group>
                         </Form.Item>
                     ) : (<Form.Item name='version' label="版本" rules={[{ required: true }]}>
                         <Select
