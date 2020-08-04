@@ -1,4 +1,4 @@
-import React, { useContext,useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { QueryRenderer, graphql } from 'react-relay';
 import { SessionContext } from 'funweb-lib'
 import {
@@ -25,6 +25,7 @@ var query = graphql`
             name
             space
             type
+            config
             mode
             url
             package{
@@ -67,21 +68,17 @@ const ModalForm = props => {
         name: dataSource.name,
         space: dataSource.space,
         type: dataSource.type,
+        config: dataSource.config,
         mode: dataSource.mode,
         url: dataSource.url,
         version: dataSource.package && dataSource.package.id,
         remark: dataSource.remark,
     }
-    
+
     const [url, setUrl] = useState(initialValues.url);//动态写值到url
 
-    //调试地址输入框
-    function dealInput (event) {
-        setUrl(event);    
-    }
-
     const onFinish = values => {
-        UpdateApp.commit(session.environment, values.id, values.name, values.space, values.type, values.mode, url, values.version, values.remark, (response, errors) => {
+        UpdateApp.commit(session.environment, values.id, values.name, values.space, values.type, values.config, values.mode, url, values.version, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
@@ -124,6 +121,9 @@ const ModalForm = props => {
                     <Select.Option value="SERVER">Server</Select.Option>
                 </Select>
             </Form.Item>
+            <Form.Item name='config' label="应用配置" rules={[{ required: true }]}>
+                <Input.TextArea autoSize={true} />
+            </Form.Item>
             <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>
                 <Radio.Group onChange={changeMode}>
                     <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
@@ -138,13 +138,13 @@ const ModalForm = props => {
                 {({ getFieldValue }) => {
                     return getFieldValue('mode') === 'DEVELOPMENT' ? (
                         <Form.Item name="url" label="url" rules={[{ required: true }]}>
-                            <Input.Group compact > 
-                                    <AutoComplete   
-                                        onChange={dealInput}   
-                                        value={url}                   
-                                        style={{ width: '100%' }}                        
-                                        options={[{ value: 'Http://127.0.0.1:8081/main.js' }]}
-                                    />
+                            <Input.Group compact >
+                                <AutoComplete
+                                    onChange={setUrl}
+                                    value={url}
+                                    style={{ width: '100%' }}
+                                    options={[{ value: 'http://127.0.0.1:8081/main.js' }]}
+                                />
                             </Input.Group>
                         </Form.Item>
                     ) : (<Form.Item name='version' label="版本" rules={[{ required: true }]}>

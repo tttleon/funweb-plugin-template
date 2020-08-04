@@ -1,12 +1,13 @@
 import { graphql, commitMutation } from 'react-relay';
 
 const mutation = graphql`
-  mutation mutations_UpdateAppMutation($id:ID!, $name: String!, $space: AppSpace!, $type: AppType!, $mode: AppMode!, $url: String, $packageid: ID, $remark: String) {
-    updateApp(id: $id, name: $name, space: $space, type: $type, mode: $mode, url: $url, packageid: $packageid, remark: $remark) {
+  mutation mutations_UpdateAppMutation($id:ID!, $name: String!, $space: AppSpace!, $type: AppType!, $config: String!, $mode: AppMode!, $url: String, $packageid: ID, $remark: String) {
+    updateApp(id: $id, name: $name, space: $space, type: $type, config: $config, mode: $mode, url: $url, packageid: $packageid, remark: $remark) {
       id
       name
       space
       type
+      config
       mode
       url
       package{
@@ -23,6 +24,7 @@ function commit(
   name,
   space,
   type,
+  config,
   mode,
   url,
   packageid,
@@ -37,6 +39,7 @@ function commit(
       name: name,
       space: space,
       type: type,
+      config: config,
       mode: mode,
       url: url,
       packageid: packageid,

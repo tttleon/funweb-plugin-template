@@ -1,4 +1,4 @@
-import React, { useContext,useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     Form,
     Input,
@@ -29,17 +29,10 @@ const CreateForm = props => {
     const session = useContext(SessionContext);
     props.title("创建应用信息");
     const { onCancel } = props;
-
-    //调试地址输入框
-    const dealInput = (event) => {
-        setUrl(event);
-        console.log("event:",event);
-    };
-
     const [url, setUrl] = useState(''); //动态写值到url
 
     const onFinish = values => {
-        CreateApp.commit(session.environment, values.name, values.space, values.type, values.mode, url, values.remark, (response, errors) => {
+        CreateApp.commit(session.environment, values.name, values.space, values.type, values.config, values.mode, url, values.remark, (response, errors) => {
             if (errors) {
                 message.error(errors[0].message);
             } else {
@@ -73,6 +66,9 @@ const CreateForm = props => {
                     <Select.Option value="SERVER">Server</Select.Option>
                 </Select>
             </Form.Item>
+            <Form.Item name='config' label="应用配置" rules={[{ required: true }]}>
+                <Input.TextArea autoSize={true} />
+            </Form.Item>
             <Form.Item name="mode" label="应用模式" rules={[{ required: true }]}>
                 <Radio.Group>
                     <Radio.Button value="DEVELOPMENT">调试模式</Radio.Button>
@@ -80,14 +76,14 @@ const CreateForm = props => {
                 </Radio.Group>
             </Form.Item>
             <Form.Item name="url" label="调试地址">
-                <Input.Group compact > 
-                    <AutoComplete   
+                <Input.Group compact >
+                    <AutoComplete
                         value={url}
-                        onChange={dealInput}                      
-                        style={{ width: '100%' }}                        
-                        options={[{ value: 'Http://127.0.0.1:8081/main.js' }]}
+                        onChange={setUrl}
+                        style={{ width: '100%' }}
+                        options={[{ value: 'http://127.0.0.1:8081/main.js' }]}
                     />
-                </Input.Group>      
+                </Input.Group>
             </Form.Item>
             {/* <Form.Item name='version' label="版本">
                 <Input />

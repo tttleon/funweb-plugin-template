@@ -23,14 +23,13 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons';
 
+// import Packages from '../../Package/List'
 
 moment.locale('zh-cn');
 
 var query = graphql`
     query Info_AppInfoQuery(
         $id: ID
-        $first: Int
-        $skip: Int
     ) {
         app(
             id: $id
@@ -47,7 +46,6 @@ var query = graphql`
             remark
             createdAt
             updatedAt
-            ...List_AppPackages @arguments(first: $first, skip: $skip)
         }
     }`
 
