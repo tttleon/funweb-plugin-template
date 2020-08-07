@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from 'antd';
 import app from './App'
 import styles from './index.css'
+import './index.global.scss'
+import stylescss from './index.scss'
 import './index.global.css'
 import img1 from './imgs/react.svg'
 
@@ -21,6 +23,8 @@ let Hello = () => {
         <div className="cssglobal" style={{ color: 'green' }}>css test 1: global css</div>
         <div className="cssgeneral" style={{ color: 'green' }}>css test 2: general css</div>
         <div className={styles.module} style={{ color: 'green' }}>css test 3: module css</div>
+        <div className="sassglobalmodule" style={{ color: 'green' }}>css test4: scss global</div>
+        <div className={stylescss.module} style={{ color: 'green' }}>css test 5: module scss</div>
     </div>;
 };
 

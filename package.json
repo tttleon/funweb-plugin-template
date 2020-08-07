@@ -34,6 +34,7 @@
     "graphql": "15.3.0",
     "mini-css-extract-plugin": "0.8.0",
     "moment": "^2.27.0",
+    "node-sass": "^4.14.1",
     "react": "16.13",
     "react-dev-utils": "^9.1.0",
     "react-relay": "10.0.0",
