@@ -37,27 +37,29 @@ var query = graphql`
         $first: Int!
         $skip: Int
     ) {
-        apps(
-            first: $first
-            skip: $skip
-        ) {
-            totalCount
-            edges {
-                id
-                name
-                space
-                type
-                mode
-                package{
-                    version
-                }
-                creator{
+        app{
+            apps(
+                first: $first
+                skip: $skip
+            ) {
+                totalCount
+                edges {
                     id
                     name
+                    space
+                    type
+                    mode
+                    package{
+                        version
+                    }
+                    creator{
+                        id
+                        name
+                    }
+                    org
+                    remark
+                    createdAt
                 }
-                org
-                remark
-                createdAt
             }
         }
     }`
@@ -291,10 +293,10 @@ function List(props) {
             }
             let d = data;
             let loading = true;
-            if (props && props.apps) {
+            if (props && props.app && props.app.apps) {
                 loading = false;
-                d = props.apps.edges;
-                pagination.total = props.apps.totalCount;
+                d = props.app.apps.edges;
+                pagination.total = props.app.apps.totalCount;
             }
 
             return <TableView

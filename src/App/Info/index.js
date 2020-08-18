@@ -23,7 +23,6 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons';
 
-// import Packages from '../../Package/List'
 
 moment.locale('zh-cn');
 
@@ -31,21 +30,23 @@ var query = graphql`
     query Info_AppInfoQuery(
         $id: ID
     ) {
-        app(
-            id: $id
-        ) {
-            id
-            name
-            space
-            type
-            mode
-            url
-            package{
-                version
+        app{
+            app(
+                id: $id
+            ) {
+                id
+                name
+                space
+                type
+                mode
+                url
+                package{
+                    version
+                }
+                remark
+                createdAt
+                updatedAt
             }
-            remark
-            createdAt
-            updatedAt
         }
     }`
 
@@ -155,11 +156,6 @@ function TableView(props) {
             </Row>
             <Divider dashed="true" />
 
-            <Card type="inner" title="版本发布历史" extra={<ModalLink to={"/App.App.Package/Create/" + dataSource.id}>
-                <Button type="link" icon={<PlusCircleOutlined />} style={{ margin: 2 }}>发布</Button>
-            </ModalLink>}>
-                {/* <Packages AppPackages={dataSource} id={dataSource.id}></Packages> */}
-            </Card>
         </>
     );
 }
@@ -184,8 +180,8 @@ function List(props) {
                     </div>)
             }
             let d = data;
-            if (props && props.app) {
-                d = props.app;
+            if (props && props.app && props.app.app) {
+                d = props.app.app;
             }
             return <TableView
                 retry={retry}

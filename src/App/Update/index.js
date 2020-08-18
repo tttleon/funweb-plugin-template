@@ -18,29 +18,31 @@ var query = graphql`
     query Update_AppInfoQuery(
         $id: ID
     ) {
-        app(
-            id: $id
-        ) {
-            id
-            name
-            space
-            type
-            config
-            mode
-            url
-            package{
+        app{
+            app(
+                id: $id
+            ) {
                 id
-                version
-            }
-            remark
-            createdAt
-            updatedAt
-            packages (first: 999){
-                edges{
+                name
+                space
+                type
+                config
+                mode
+                url
+                package{
                     id
                     version
                 }
-                totalCount
+                remark
+                createdAt
+                updatedAt
+                packages (first: 999){
+                    edges{
+                        id
+                        version
+                    }
+                    totalCount
+                }
             }
         }
     }`
@@ -188,10 +190,10 @@ function UpdateForm(props) {
                         <h1>Error!</h1><br />{error.message}
                     </div>)
             }
-            if (props && props.app) {
+            if (props && props.app && props.app.app) {
                 return (
                     <ModalForm
-                        dataSource={props.app}
+                        dataSource={props.app.app}
                         onCancel={onCancel}
                     />)
             }
