@@ -50,6 +50,11 @@ module.exports = {
             },
         })
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve('src')
+        }
+    },
     module: {
         rules: [
             {

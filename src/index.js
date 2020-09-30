@@ -6,6 +6,7 @@ import './index.global.scss'
 import stylescss from './index.scss'
 import './index.global.css'
 import img1 from './imgs/react.svg'
+import Test from '@/App/List/index'
 
 let Hello = () => {
     return <div>

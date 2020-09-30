@@ -38,6 +38,11 @@ module.exports = {
         moment: "moment",
         "moment/locale/zh-cn": "moment/locale/zh-cn"
     },
+    resolve: {
+        alias: {
+            '@': path.resolve('src')
+        }
+    },
     module: {
         rules: [
             {
