@@ -40,7 +40,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            '@': path.resolve('src')
+            'src': path.resolve('src')
         }
     },
     module: {
@@ -109,7 +109,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/i,
+                test: /\.(png|svg|jpe?g|gif)(\?.*)?$/i,
                 use: [
                     {
                         loader: 'file-loader',
@@ -121,12 +121,24 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                test: /\.(woff|woff2|eot|ttf|otf)(\?.*)?$/i,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             name: '[name].[hash:8].[ext]',
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[hash:8].[ext]',
+                            outputPath: 'audio'
                         }
                     }
                 ]

@@ -37,7 +37,7 @@ module.exports = {
             //         return path.join(path.dirname(assetPath), 'images', path.basename(assetPath));
             //     return assetPath;
             // },
-            include: [/\.js$/, /\.(png|svg|jpg|gif)$/, /\.(woff|woff2|eot|ttf|otf)$/],
+            include: [/\.js$/, /\.(png|svg|jpg|gif)$/, /\.(woff|woff2|eot|ttf|otf)$/,/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/],
             exclude: [/\.htm$/, /\.html$/],
             fileOptions: {
                 mtime: new Date(),
@@ -52,7 +52,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
-            '@': path.resolve('src')
+            'src': path.resolve('src')
         }
     },
     module: {
@@ -121,7 +121,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpe?g|gif)(\?.*)?$/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -134,9 +134,21 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                test: /\.(woff|woff2|eot|ttf|otf)(\?.*)?$/,
                 use: [
                     'file-loader'
+                ]
+            },
+            {
+                test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[hash:8].[ext]',
+                            outputPath: 'audio'
+                        }
+                    }
                 ]
             }
         ]
